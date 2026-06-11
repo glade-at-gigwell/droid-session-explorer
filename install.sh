@@ -6,8 +6,11 @@ REPO="ain3sh/droid-session-explorer"
 INSTALL_DIR="${DSX_INSTALL_DIR:-$HOME/.local/bin}"
 VERSION="${DSX_VERSION:-latest}"
 
+tmp=""
+trap 'rm -rf "${tmp:-}"' EXIT
+
 main() {
-  local os arch target tmp url
+  local os arch target url
   case "$(uname -s)" in
     Linux) os="linux" ;;
     Darwin) os="darwin" ;;
@@ -27,7 +30,6 @@ main() {
   fi
 
   tmp="$(mktemp -d)"
-  trap 'rm -rf "$tmp"' EXIT
 
   echo "downloading dsx (${target}, ${VERSION})..."
   curl -fSL --progress-bar "$url" -o "$tmp/dsx.tar.gz"
