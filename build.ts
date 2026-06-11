@@ -4,8 +4,9 @@ const result = await Bun.build({
   entrypoints: ["./src/index.ts"],
   outdir: "./dist",
   target: "bun",
-  packages: "external",
-  banner: "#!/usr/bin/env bun",
+  // solid-js and @opentui/solid must be bundled so the plugin can redirect
+  // solid-js to its client build; everything else stays external.
+  external: ["@opentui/core", "commander", "picocolors"],
   plugins: [solidPlugin],
 })
 
