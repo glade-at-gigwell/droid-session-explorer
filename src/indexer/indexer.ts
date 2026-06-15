@@ -302,7 +302,10 @@ export class Indexer {
         }
         case "todo_state":
           counters.todo_count++
-          counters.last_todos = record.todos?.todos ?? counters.last_todos
+          {
+            const raw = record.todos?.todos ?? counters.last_todos
+            counters.last_todos = typeof raw === "string" ? raw : JSON.stringify(raw)
+          }
           break
         case "compaction_state":
           counters.compaction_count++
