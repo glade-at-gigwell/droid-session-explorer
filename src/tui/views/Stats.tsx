@@ -1,4 +1,4 @@
-import { createMemo, createSignal, For } from "solid-js"
+import { createMemo, createSignal, For, Show } from "solid-js"
 import { useKeyboard } from "@opentui/solid"
 import {
   byDay,
@@ -195,7 +195,7 @@ export function StatsView() {
           {(d) => (
             <text>
               {dim() === d ? (
-                <span style={{ fg: T.bg, bg: T.accent }}>{` ${d} `}</span>
+                <span style={{ fg: T.bg, bg: T.accent }}>{` [${d}] `}</span>
               ) : (
                 <span style={{ fg: T.dim }}>{` ${d} `}</span>
               )}
@@ -222,11 +222,41 @@ export function StatsView() {
         <text>
           <span style={{ fg: editing() === "project" ? T.yellow : T.dim }}>p:project </span>
         </text>
-        <input value={project()} onInput={setProject} placeholder="all" focused={editing() === "project"} width={18} />
+        <Show
+          when={editing() === "project"}
+          fallback={
+            <text>
+              <span style={{ fg: project() ? T.cyan : T.dim }}>{displayFilter(project())}</span>
+            </text>
+          }
+        >
+          <input
+            value={project()}
+            onInput={setProject}
+            placeholder="all"
+            focused
+            width={24}
+          />
+        </Show>
         <text>
           <span style={{ fg: editing() === "model" ? T.yellow : T.dim }}>m:model </span>
         </text>
-        <input value={model()} onInput={setModel} placeholder="all" focused={editing() === "model"} width={20} />
+        <Show
+          when={editing() === "model"}
+          fallback={
+            <text>
+              <span style={{ fg: model() ? T.cyan : T.dim }}>{displayFilter(model())}</span>
+            </text>
+          }
+        >
+          <input
+            value={model()}
+            onInput={setModel}
+            placeholder="all"
+            focused
+            width={20}
+          />
+        </Show>
       </box>
       <scrollbox focused flexGrow={1}>
         <For each={rows()}>
@@ -243,6 +273,11 @@ export function StatsView() {
 
 function shortProject(key: string): string {
   return key.split("/").slice(-2).join("/")
+}
+
+function displayFilter(value: string): string {
+  if (!value) return "all"
+  return value.length > 24 ? `${value.slice(0, 21)}...` : value
 }
 
 function formatRate(value: number): string {

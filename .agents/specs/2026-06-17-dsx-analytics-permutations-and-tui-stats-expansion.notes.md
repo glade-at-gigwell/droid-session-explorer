@@ -35,3 +35,8 @@ User comment: you should use droid-control for TUI verification when appropriate
 **Type**: decision
 **Context**: The initial query coverage put day-group, tool-matrix, segment, and distribution assertions in one broad test. The over-coverage pass found that each invariant had the same owning integration suite but separate failure modes.
 **Resolution**: Split the assertions into focused tests inside `tests/indexer.test.ts`. The alternative was keeping one broad smoke test, but that made regressions less local and violated the requested atomicity.
+
+## 2026-06-16T20:18:07-07:00 — Stats TUI top bar needs text state, not just color
+**Type**: bugfix
+**Context**: tctl snapshots strip styling, and the dimension row only changed background color for the selected tab. That made automated verification weak and made the top bar look static if color rendering lagged or was unavailable. Long project inputs also displayed through the input viewport, so the visible value could be misleading while editing closed.
+**Resolution**: Render the selected dimension with explicit brackets and show project/model filter values as text chips when not editing, using inputs only while editing. This makes `tab`, `w`, `v`, `a`, `p`, and `m` state transitions visible in both terminal snapshots and normal TUI use.
